@@ -1,4 +1,4 @@
-# M5 (Accuracy) Forecasting Competition Hosted on Kaggle (Work In Progress)
+# M5 (Accuracy) Forecasting Competition Hosted on Kaggle
 
 * https://en.wikipedia.org/wiki/Makridakis_Competitions
 * https://www.kaggle.com/c/m5-forecasting-accuracy/
