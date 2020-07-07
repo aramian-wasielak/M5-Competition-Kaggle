@@ -6,7 +6,7 @@ The goal of this competition is to provide a set of 28 days ahead point forecast
 
 The Makridakis Competitions (also known as the M Competitions or M-Competitions) are a series of open competitions organized by teams led by forecasting researcher Spyros Makridakis and intended to evaluate and compare the accuracy of different forecasting methods.
 
-The M5 Competition consists of two parallel tracks using the same dataset, the first requiring 28 days ahead point forecasts and the second 28 days ahead probabilistic forecasts for the median and four prediction intervals (50%, 67%, 95%, and 99%).
+The M5 Competition consists of two parallel tracks using the same dataset, the first requiring 28 days ahead point forecasts (M5 Forecasting - Accuracy) and the second 28 days ahead probabilistic forecasts for the median and four prediction intervals: 50%, 67%, 95%, and 99% (M5 Forecasting - Uncertainty).
 
 Here are some helpful links:
 
