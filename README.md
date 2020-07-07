@@ -1,6 +1,6 @@
 # M5 Forecasting (Accuracy) Competition Hosted on Kaggle
 
-The goal of this competition is to provide a set of 28 days ahead point forecasts for unit sales of 3,049 products (classified in 3 product categories: Hobbies, Foods, and Household) sold across 10 Walmarts stores located in CA, TX, and WI.
+The goal of this competition is to forecast 28 days ahead unit sales of 3,049 products (classified in 3 product categories: Hobbies, Foods, and Household) sold across 10 Walmarts stores located in CA, TX, and WI.
 
 ### Background
 
