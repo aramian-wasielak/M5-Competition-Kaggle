@@ -2,7 +2,7 @@
 
 The goal of this competition is to provide a set of 28 days ahead point forecasts for unit sales of 3,049 products, classified in 3 product categories (Hobbies, Foods, and Household) and 7 product departments sold across 10 Walmarts stores, located in 3 States (CA, TX, and WI).
 
-## Background
+### Background
 
 The Makridakis Competitions (also known as the M Competitions or M-Competitions) are a series of open competitions organized by teams led by forecasting researcher Spyros Makridakis and intended to evaluate and compare the accuracy of different forecasting methods.
 
