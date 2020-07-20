@@ -1,4 +1,4 @@
-name: trading-strategies
+name: m5 
 channels:
   - conda-forge
   - anaconda
@@ -10,3 +10,5 @@ dependencies:
   - matplotlib
   - tqdm 
   - pandas-datareader
+  - luigi
+  - lightgbm
