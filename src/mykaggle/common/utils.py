@@ -1,6 +1,7 @@
-import pandas as pd
 import gc
+
 import numpy as np
+import pandas as pd
 
 
 def time_features(df, date_col):
@@ -10,7 +11,7 @@ def time_features(df, date_col):
         # "month",
         "week",
         "day",
-        "dayofweek"
+        "dayofweek",
     ]
 
     for attr in attrs:
@@ -19,23 +20,10 @@ def time_features(df, date_col):
     df["is_weekend"] = df["dayofweek"].isin([5, 6]).astype(np.int8)
     return df
 
-def downcast_numeric_cols(df):
-    int_cols = df.select_dtypes(include=['int']).columns
-    float_cols = df.select_dtypes(include=['float']).columns
-
-    for col in int_cols:
-        df[col] = pd.to_numeric(df[col], downcast="integer")
-
-    for col in float_cols:
-        df[col] = pd.to_numeric(df[col], downcast="float")
-
-    gc.collect()
-
-    return df
 
 def downcast_numeric_cols(df):
-    int_cols = df.select_dtypes(include=['int']).columns
-    float_cols = df.select_dtypes(include=['float']).columns
+    int_cols = df.select_dtypes(include=["int"]).columns
+    float_cols = df.select_dtypes(include=["float"]).columns
 
     for col in int_cols:
         df[col] = pd.to_numeric(df[col], downcast="integer")
@@ -50,8 +38,8 @@ def downcast_numeric_cols(df):
 
 def label_encoder(df, cols):
     for col in cols:
-        print('Processing column: {}'.format(col))
-        df[col] = df[col].astype('category')
+        print("Processing column: {}".format(col))
+        df[col] = df[col].astype("category")
 
     return df
 

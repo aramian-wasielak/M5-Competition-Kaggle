@@ -12,3 +12,4 @@ dependencies:
   - pandas-datareader
   - luigi
   - lightgbm
+  - pre_commit
