@@ -16,12 +16,37 @@ from mykaggle.common.utils import (
 )
 
 
+class InputFile(luigi.LocalTarget):
+    def __init__(self, file):
+        super().__init__(str(config.input_dir / file))
+
+    def get_path(self):
+        return self.path
+
+    def load(self):
+        return pd.read_csv(self.get_path())
+
+
+class OutputFile(luigi.LocalTarget):
+    def __init__(self, file):
+        super().__init__(str(config.output_dir / file))
+
+    def get_path(self):
+        return self.path
+
+    def load(self):
+        return pd.read_pickle(self.get_path())
+
+    def save(self, df):
+        df.to_pickle(self.get_path())
+
+
 class CheckInputFiles(luigi.ExternalTask):
     def output(self):
         return [
-            luigi.LocalTarget(str(config.input_dir / "sales_train_evaluation.csv")),
-            luigi.LocalTarget(str(config.input_dir / "calendar.csv")),
-            luigi.LocalTarget(str(config.input_dir / "sell_prices.csv")),
+            InputFile("sales_train_evaluation.csv"),
+            InputFile("calendar.csv"),
+            InputFile("sell_prices.csv"),
         ]
 
 
@@ -32,11 +57,11 @@ class ProcessInputFiles(luigi.Task):
         return CheckInputFiles()
 
     def run(self):
-        sales = pd.read_csv(config.input_dir / "sales_train_evaluation.csv")
+        sales = InputFile("sales_train_evaluation.csv").load()
         sales = sales[sales.store_id == self.store_id]
 
-        calendar = pd.read_csv(config.input_dir / "calendar.csv")
-        prices = pd.read_csv(config.input_dir / "sell_prices.csv")
+        calendar = InputFile("calendar.csv").load()
+        prices = InputFile("sell_prices.csv").load()
 
         sales = label_encoder(
             sales, ["id", "item_id", "dept_id", "cat_id", "store_id", "state_id"]
@@ -72,14 +97,10 @@ class ProcessInputFiles(luigi.Task):
 
         sales = sales[sales.sell_price.notnull()]
 
-        sales.to_pickle(
-            config.output_dir / f"features_sales_base_store_{self.store_id}.pickle"
-        )
+        OutputFile(f"features_sales_base_store_{self.store_id}.pickle").save(sales)
 
     def output(self):
-        return luigi.LocalTarget(
-            str(config.output_dir / f"features_sales_base_store_{self.store_id}.pickle")
-        )
+        return OutputFile(f"features_sales_base_store_{self.store_id}.pickle")
 
 
 class SalesTimeSeriesFeatures(luigi.Task):
@@ -348,7 +369,7 @@ class TrainModel(luigi.Task):
         )
 
 
-class RunPrediction(luigi.Task):
+class RunPredictionStoreWeek(luigi.Task):
     store_id = luigi.Parameter()
     pred_week = luigi.IntParameter()
 
@@ -399,21 +420,33 @@ class RunPrediction(luigi.Task):
         )
 
 
-class RunPredictionAll(luigi.Task):
-    store_list = config.store_list
-    pred_week = config.pred_week_list
+class RunPredictionStore(luigi.WrapperTask):
+    store_id = luigi.Parameter()
+    pred_week_list = config.pred_week_list
 
     def requires(self):
         return {
-            (s, w): RunPrediction(store_id=s, pred_week=w)
-            for s in self.store_list
-            for w in self.pred_week
+            w: RunPredictionStoreWeek(store_id=self.store_id, pred_week=w)
+            for w in self.pred_week_list
         }
+
+    def run(self):
+        os.remove(
+            config.output_dir / f"features_sales_base_store_{self.store_id}.pickle"
+        )
+        os.remove(config.output_dir / f"features_sales_ts_store_{self.store_id}.pickle")
+
+
+class RunPredictionAll(luigi.Task):
+    store_list = config.store_list
+
+    def requires(self):
+        return {s: RunPredictionStore(store_id=s) for s in self.store_list}
 
     def run(self):
         preds = []
         for store_id in self.store_list:
-            for pred_week in self.pred_week:
+            for pred_week in config.pred_week_list:
                 preds.append(
                     pd.read_pickle(
                         config.output_dir
