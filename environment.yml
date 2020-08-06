@@ -13,3 +13,6 @@ dependencies:
   - luigi
   - lightgbm
   - pre_commit
+  - pytest
+  - kaggle
+  - pyyaml
