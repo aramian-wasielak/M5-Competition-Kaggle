@@ -1,12 +1,10 @@
 import logging
 import os
-import pickle
 from datetime import datetime
 
 import luigi
 import numpy as np
 import pandas as pd
-import yaml
 from lightgbm import LGBMRegressor
 
 from mykaggle.common.utils import (
@@ -15,72 +13,11 @@ from mykaggle.common.utils import (
     label_encoder,
     time_features,
 )
+from mykaggle.project.m5.common import GlobalParams, InputTask, OutputFile
 
 logger = logging.getLogger("luigi-interface")
 
 NUM_DAYS_1_WEEK = 7
-
-
-class GlobalParams(luigi.Config):
-    config_file = luigi.Parameter(default="")
-    config = None
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
-        if self.config is None:
-            # TODO: Config location decide
-            base_yaml = yaml.full_load(open("mykaggle/project/m5/config/base.yaml"))
-            config_yaml = yaml.full_load(
-                open(f"mykaggle/project/m5/config/{self.config_file}.yaml")
-            )
-            config = {**base_yaml, **config_yaml}
-            self.__class__.config = config
-            yaml.dump(
-                config, open(os.path.join(config["output_dir"], "params.yaml"), "w")
-            )
-
-
-class InputFile(luigi.LocalTarget):
-    def __init__(self, file):
-        config = GlobalParams().config
-        self.path = os.path.join(config["input_dir"], file)
-        super().__init__(self.path)
-
-    def get_path(self):
-        return self.path
-
-    def load(self):
-        path = self.get_path()
-        logger.info(f"Loading file: {path}")
-        return pd.read_csv(path)
-
-
-class OutputFile(luigi.LocalTarget):
-    def __init__(self, file):
-        config = GlobalParams().config
-        self.path = os.path.join(config["output_dir"], file)
-        super().__init__(self.path)
-
-    def get_path(self):
-        return self.path
-
-    def load(self):
-        path = self.get_path()
-        logger.info(f"Loading file: {path}")
-        return pickle.load(open(path, "rb"))
-
-    def save(self, df):
-        path = self.get_path()
-        logger.info(f"Saving file: {path}")
-        pickle.dump(df, open(path, "wb"))
-
-
-class InputTask(luigi.ExternalTask):
-    input_file = luigi.Parameter()
-
-    def output(self):
-        return InputFile(self.input_file)
 
 
 class ProcessInputFiles(luigi.Task):
@@ -318,7 +255,6 @@ class TrainModel(luigi.Task):
         )
         y_valid = sales[sales.date >= valid_start_date][config["pred_target_col"]]
 
-        print(GlobalParams().config["lgb_params"])
         model = LGBMRegressor(**GlobalParams().config["lgb_params"])
         model.fit(
             X_train,
