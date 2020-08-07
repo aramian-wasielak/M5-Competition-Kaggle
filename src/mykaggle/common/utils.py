@@ -1,7 +1,10 @@
 import gc
+import logging
 
 import numpy as np
 import pandas as pd
+
+logger = logging.getLogger("luigi-interface")
 
 
 def time_features(df, date_col):
@@ -38,7 +41,7 @@ def downcast_numeric_cols(df):
 
 def label_encoder(df, cols):
     for col in cols:
-        print("Processing column: {}".format(col))
+        logger.debug("Label encoder - processing column: {}".format(col))
         df[col] = df[col].astype("category")
 
     return df

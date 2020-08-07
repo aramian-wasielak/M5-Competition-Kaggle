@@ -1,0 +1,11 @@
+input_dir: "../data/input"
+output_dir: "../data/output"
+
+target_col: "units_sold"
+pred_target_col: "pred_units_sold"
+pred_date_col: "pred_date"
+
+test_start_date: "2016-05-16"
+test_end_date: "2016-05-22"
+
+valid_num_days: 20
