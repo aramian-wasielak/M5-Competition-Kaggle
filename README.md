@@ -33,8 +33,10 @@ $ unzip m5-forecasting-accuracy.zip
 
 Run the pipeline:
 ```
-$ TBD
+$ cd src
+$ python -m mykaggle.project.m5.pipeline
 ```
+
 ### Acknowledgements
 
 ### References
