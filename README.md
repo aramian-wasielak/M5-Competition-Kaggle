@@ -21,6 +21,22 @@ Install prerequisites:
 $ conda env create -f environment.yml 
 ```
 
+Setup ```kaggle``` CLI tool: https://www.kaggle.com/docs/api
+
+Run the following commands to download and decompress rquired data:
+```
+$ conda activate m5
+$ cd data/input
+$ kaggle download -c m5-forecasting-accuracy
+$ unzip m5-forecasting-accuracy.zip
+```
+
+Run the pipeline:
+```
+$ cd src
+$ python -m mykaggle.project.m5.pipeline
+```
+
 ### Acknowledgements
 
 ### References
