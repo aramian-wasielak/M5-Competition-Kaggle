@@ -397,3 +397,7 @@ class RunPipeline(luigi.WrapperTask):
         logger.info(
             "Running pipeline is done: {}".format(datetime.now() - self.start_time)
         )
+
+
+if __name__ == "__main__":
+    luigi.build([RunPipeline(config_file="quick_one")], workers=1, local_scheduler=True)

@@ -17,7 +17,8 @@ class GlobalParams(luigi.Config):
         super().__init__(*args, **kwargs)
 
         if self.config is None:
-            # TODO: Config location decide
+            # TODO: Decide on config location.
+            #       Potentially use os.path.dirname(os.path.abspath(__file__))
             base_yaml = yaml.full_load(open("mykaggle/project/m5/config/base.yaml"))
             config_yaml = yaml.full_load(
                 open(f"mykaggle/project/m5/config/{self.config_file}.yaml")
